@@ -28,12 +28,8 @@ public class MovimentEnemy : MonoBehaviour
         if (collision.gameObject.CompareTag("Player"))
         {
             Destroy(collision.gameObject);
-            Destroy(this.gameObject);
+            Destroy(gameObject);
         }
-        if (collision.gameObject.CompareTag("Point") || collision.gameObject.CompareTag("Enemy"))
-        {
-            Debug.Log("Colidiu");
-            Physics.IgnoreCollision(collision.collider, gameObject.GetComponent<Collider>());
-        }
+        
     }
 }

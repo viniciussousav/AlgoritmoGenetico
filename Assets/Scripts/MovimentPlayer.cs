@@ -4,28 +4,45 @@ using UnityEngine;
 using UnityEngine.AI;
 public class MovimentPlayer : MonoBehaviour
 {
-    NavMeshAgent navmesh;
+    private GameObject target;
+    private NavMeshAgent nav;
+    public float lifeTime;
+    public int score;
+
     //public Transform position;
 
 
     // Start is called before the first frame update
     void Start()
     {
-        navmesh = GetComponent<NavMeshAgent>();
-        navmesh.speed = 2f;
+        score = 0;
+        lifeTime = 0;
+        nav = gameObject.GetComponent<NavMeshAgent>();
+        nav.SetDestination(target.transform.position);
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        lifeTime += Time.deltaTime;
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        if(collision.gameObject.tag == "Point")
+        if(collision.gameObject == target)
         {
+            score += 1;
             Destroy(collision.gameObject);
         }
+    }
+
+    public void setTarget(GameObject target)
+    {
+        this.target = target;
+    }
+
+    public void updateDestination()
+    {
+        nav.SetDestination(target.transform.position);
     }
 }
