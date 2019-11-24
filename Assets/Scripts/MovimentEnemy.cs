@@ -21,15 +21,9 @@ public class MovimentEnemy : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.CompareTag("SpawnerDestroyer"))
+        if (collision.gameObject.CompareTag("SpawnerDestroyer") || collision.gameObject.CompareTag("Player"))
         {
-            Destroy(this.gameObject);
-        }
-        if (collision.gameObject.CompareTag("Player"))
-        {
-            Destroy(collision.gameObject);
             Destroy(gameObject);
         }
-        
     }
 }

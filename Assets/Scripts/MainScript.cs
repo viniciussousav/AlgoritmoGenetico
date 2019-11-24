@@ -21,6 +21,7 @@ public class MainScript : MonoBehaviour
     private int generation;
     private float time;
     private int bestScore;
+    public int quantityActive;
 
     public Vector3 startPosition;
     public List<GameObject> population;
@@ -34,6 +35,7 @@ public class MainScript : MonoBehaviour
         score = 0;
         bestScore = 0;
         populationSize = 5;
+        quantityActive = populationSize;
 
         scoreText.text = "Pontos: " + score.ToString();
         generationText.text = "Geração nº " + generation.ToString();
@@ -53,27 +55,29 @@ public class MainScript : MonoBehaviour
         time += Time.deltaTime;
         timeText.text = ((int)time).ToString();
 
-        if(population.Count == 0)
+        if(quantityActive == 0)
         {
+            for(int i = 0; i < population.Count; i++)
+            {
+                Destroy(population[i]);
+                Destroy(targets[i]);
+            }
+            population.Clear();
+            targets.Clear();
+
+            quantityActive = populationSize;
             generation += 1;
             generationText.text = "Geração nº " + generation.ToString();
-            initializePopulation(population, targets); //aqui na verdade é para criar uma função que reproduta a partir do gene dos dois melhores
-        }
-        for(int i = 0; i < population.Count; i++)
+            initializePopulation(population, targets); //aqui na verdade é para criar uma função que reproduza a partir do gene dos dois melhores
+        } else
         {
-            if(population.Count == 2)
+            for (int i = 0; i < population.Count; i++)
             {
-                //fazer os dois serem os melhores
-            }
-            
-            if(population.Count > 0)
-            {
-                if(population[i] == null)
+                if (population[i].activeSelf == false)
                 {
                     Destroy(targets[i]);
-                    population.RemoveAt(i);
-                    targets.RemoveAt(i);
-                } else if(targets[i] == null)
+                }
+                else if (targets[i] ==  null)
                 {
                     float randomX = Random.Range(-8.3f, 8.3f);
                     float randomZ = Random.Range(-9f, 2f);
@@ -81,10 +85,10 @@ public class MainScript : MonoBehaviour
                     targets[i] = Instantiate(pointGameObject, randomPosition, Quaternion.identity);
                     population[i].GetComponent<MovimentPlayer>().setTarget(targets[i]);
                     population[i].GetComponent<MovimentPlayer>().updateDestination();
-                } 
+                }
+                
             }
         }
-
     }
 
     public void initializePopulation(List<GameObject> population, List<GameObject> target)

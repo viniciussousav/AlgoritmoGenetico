@@ -33,6 +33,10 @@ public class MovimentPlayer : MonoBehaviour
         {
             score += 1;
             Destroy(collision.gameObject);
+        } else if (collision.gameObject.CompareTag("Enemy"))
+        {
+            gameObject.SetActive(false);
+            Camera.main.GetComponent<MainScript>().quantityActive -= 1;
         }
     }
 

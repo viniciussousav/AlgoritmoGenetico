@@ -682,7 +682,11 @@ MonoBehaviour:
   generationText: {fileID: 32730119}
   timeText: {fileID: 774232461}
   bestScoreText: {fileID: 1317577084}
+  populationSize: 0
+  quantityActive: 0
   startPosition: {x: 0.7, y: 0.25, z: -2.5}
+  population: []
+  targets: []
 --- !u!1 &1232912185
 GameObject:
   m_ObjectHideFlags: 0
