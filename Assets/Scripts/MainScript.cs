@@ -10,17 +10,10 @@ public class MainScript : MonoBehaviour
     public GameObject playerGameObject;
     public GameObject pointGameObject;
 
-    public Text scoreText;
     public Text generationText;
-    public Text timeText;
-    public Text bestScoreText;
-
 
     public int populationSize;
-    private int score;
     private int generation;
-    private float time;
-    private int bestScore;
     public int quantityActive;
 
     public Vector3 startPosition;
@@ -30,16 +23,11 @@ public class MainScript : MonoBehaviour
 
     void Start()
     {
-        time = 0;
         generation = 1;
-        score = 0;
-        bestScore = 0;
         populationSize = 5;
         quantityActive = populationSize;
 
-        scoreText.text = "Pontos: " + score.ToString();
         generationText.text = "Geração nº " + generation.ToString();
-        bestScoreText.text = "Melhor pontuação: " + bestScore.ToString();
         
         startPosition = new Vector3(-7f, 0.25f, -2.5f);
         population = new List<GameObject>();
@@ -52,8 +40,6 @@ public class MainScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        time += Time.deltaTime;
-        timeText.text = ((int)time).ToString();
 
         if(quantityActive == 0)
         {
@@ -112,6 +98,31 @@ public class MainScript : MonoBehaviour
         }
     }
     
+    public float fitnessFunction(GameObject element)
+    {
+        float score = element.GetComponent<MovimentPlayer>().getScore();
+        float time = element.GetComponent<MovimentPlayer>().getLifeTime();
 
+        return score / time; //mudar essa função
+    }
+
+    public void  selection()
+    {
+        int n = population.Count;
+        for(int i = 0; i < n - 1; i++)
+        {
+            for(int j = 0; j < n - i - 1; j++)
+            {
+                if(fitnessFunction(population[j+1]) > fitnessFunction(population[j + 1]))
+                {
+                    GameObject aux = population[j];
+                    population[j] = population[j + 1];
+                    population[j + 1] = aux;
+
+                }
+            }
+        }
+    }
     
+
 }
