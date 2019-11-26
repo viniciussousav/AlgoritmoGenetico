@@ -90,11 +90,12 @@ public class MainScript : MonoBehaviour
             Vector3 randomPosition = new Vector3(randomX, 0.15f, randomZ);
             target.Add(Instantiate(pointGameObject, randomPosition, Quaternion.identity));
 
-            randomScale = Random.Range(0.5f, 2f);
+            randomScale = Random.Range(0.25f, 2.5f);
             population.Add(Instantiate(playerGameObject, startPosition, Quaternion.identity));
             population[i].GetComponent<MovimentPlayer>().setTarget(target[i]);
             population[i].GetComponent<Transform>().localScale = new Vector3(randomScale, randomScale, randomScale);
-            population[i].GetComponent<NavMeshAgent>().speed = Random.Range(1f, 4f);
+            population[i].GetComponent<NavMeshAgent>().speed = Random.Range(1f, 5f);
+            population[i].GetComponent<NavMeshAgent>().acceleration = Random.Range(2f, 10f);
         }
     }
     
@@ -131,17 +132,20 @@ public class MainScript : MonoBehaviour
         for (int i = 0; i < populationSize; i++)
         {
             population.Add(Instantiate(playerGameObject, startPosition, Quaternion.identity));
-            for (int j = 0; j < 2; j++)
+            for (int j = 0; j < 3; j++)
             {
                 int r = Random.Range(0, 2);
-                if(j == 0)
+                switch (j)
                 {
-                    population[i].GetComponent<NavMeshAgent>().velocity = parents[r].GetComponent<NavMeshAgent>().velocity;
-                    
-                } else if(j == 1)
-                {
-                    population[i].transform.localScale = parents[r].transform.localScale;
-
+                    case 0:
+                        population[i].GetComponent<NavMeshAgent>().velocity = parents[r].GetComponent<NavMeshAgent>().velocity;
+                        break;
+                    case 1:
+                        population[i].transform.localScale = parents[r].transform.localScale;
+                        break;
+                    case 2:
+                        population[i].GetComponent<NavMeshAgent>().acceleration = parents[r].GetComponent<NavMeshAgent>().acceleration;
+                        break;
                 }
             }
 
@@ -155,8 +159,11 @@ public class MainScript : MonoBehaviour
 
     public void mutation()
     {
-        float r = Random.Range(0.5f, 3f);
-        population[0].transform.localScale.Set(r, r, r);
+        int randomIndex = Random.Range(0, 5);
+        float randomScale = Random.Range(0.5f, 3f);
+        population[randomIndex].transform.localScale.Set(randomScale, randomScale, randomScale);
+        population[randomIndex].GetComponent<NavMeshAgent>().acceleration = Random.Range(2f, 12f);
+        population[randomIndex].GetComponent<NavMeshAgent>().speed = Random.Range(1f, 5f);
     }
     
 

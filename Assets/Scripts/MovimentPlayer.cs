@@ -23,8 +23,8 @@ public class MovimentPlayer : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        offsetTime = new Vector3(0, 1, -0.5f);
-        offsetScore = new Vector3(0, 1, -1f);
+        offsetTime = new Vector3(0, 1.2f, -0.5f);
+        offsetScore = new Vector3(0, 1.2f, -1f);
 
 
         textLife = Instantiate(textPrefab, FindObjectOfType<Canvas>().transform);
@@ -57,10 +57,10 @@ public class MovimentPlayer : MonoBehaviour
             Destroy(collision.gameObject);
         } else if (collision.gameObject.CompareTag("Enemy"))
         {
-            gameObject.SetActive(false);
-            Camera.main.GetComponent<MainScript>().quantityActive -= 1;
             Destroy(textLife);
             Destroy(textScore);
+            gameObject.SetActive(false);
+            Camera.main.GetComponent<MainScript>().quantityActive -= 1;
         }
     }
 
