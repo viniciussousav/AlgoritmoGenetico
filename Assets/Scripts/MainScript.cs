@@ -28,21 +28,21 @@ public class MainScript : MonoBehaviour
         quantityActive = populationSize;
 
         generationText.text = "Geração nº " + generation.ToString();
-        
+
         startPosition = new Vector3(-7f, 0.25f, -2.5f);
         population = new List<GameObject>();
         targets = new List<GameObject>();
 
         initializePopulation(population, targets);
-
     }
 
     // Update is called once per frame
     void Update()
     {
-
         if(quantityActive == 0)
         {
+
+            GameObject []parents = selection();
             for(int i = 0; i < population.Count; i++)
             {
                 Destroy(population[i]);
@@ -54,7 +54,10 @@ public class MainScript : MonoBehaviour
             quantityActive = populationSize;
             generation += 1;
             generationText.text = "Geração nº " + generation.ToString();
-            initializePopulation(population, targets); //aqui na verdade é para criar uma função que reproduza a partir do gene dos dois melhores
+
+            crossover(parents);
+            mutation();
+            
         } else
         {
             for (int i = 0; i < population.Count; i++)
@@ -78,18 +81,15 @@ public class MainScript : MonoBehaviour
     }
 
     public void initializePopulation(List<GameObject> population, List<GameObject> target)
-    {
-        for (int i = 0; i < populationSize; i++)
+    { 
+        float randomScale;
+        for(int i = 0; i < populationSize; i++)
         {
             float randomX = Random.Range(-8.3f, 8.3f);
             float randomZ = Random.Range(-9f, 2f);
             Vector3 randomPosition = new Vector3(randomX, 0.15f, randomZ);
             target.Add(Instantiate(pointGameObject, randomPosition, Quaternion.identity));
-        }
 
-        float randomScale;
-        for(int i = 0; i < populationSize; i++)
-        {
             randomScale = Random.Range(0.5f, 2f);
             population.Add(Instantiate(playerGameObject, startPosition, Quaternion.identity));
             population[i].GetComponent<MovimentPlayer>().setTarget(target[i]);
@@ -126,10 +126,9 @@ public class MainScript : MonoBehaviour
         return selectionResult;
     }
 
-    public void crossover()
+    public void crossover(GameObject[] parents)
     {
-        GameObject[] selectionResult = selection();
-        for(int i = 0; i < population.Count; i++)
+        for (int i = 0; i < populationSize; i++)
         {
             population.Add(Instantiate(playerGameObject, startPosition, Quaternion.identity));
             for (int j = 0; j < 2; j++)
@@ -137,15 +136,27 @@ public class MainScript : MonoBehaviour
                 int r = Random.Range(0, 2);
                 if(j == 0)
                 {
-                    population[i].GetComponent<NavMeshAgent>().velocity = selectionResult[r].GetComponent<NavMeshAgent>().velocity;
+                    population[i].GetComponent<NavMeshAgent>().velocity = parents[r].GetComponent<NavMeshAgent>().velocity;
                     
                 } else if(j == 1)
                 {
-                    population[i].transform.localScale = selectionResult[r].transform.localScale;
+                    population[i].transform.localScale = parents[r].transform.localScale;
 
                 }
             }
+
+            float randomX = Random.Range(-8.3f, 8.3f);
+            float randomZ = Random.Range(-9f, 2f);
+            Vector3 randomPosition = new Vector3(randomX, 0.15f, randomZ);
+            targets.Add(Instantiate(pointGameObject, randomPosition, Quaternion.identity));
+            population[i].GetComponent<MovimentPlayer>().setTarget(targets[i]);
         }
+    }
+
+    public void mutation()
+    {
+        float r = Random.Range(0.5f, 3f);
+        population[0].transform.localScale.Set(r, r, r);
     }
     
 
