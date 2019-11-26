@@ -106,7 +106,7 @@ public class MainScript : MonoBehaviour
         return score / time; //mudar essa função
     }
 
-    public void  selection()
+    public GameObject[] selection()
     {
         int n = population.Count;
         for(int i = 0; i < n - 1; i++)
@@ -118,6 +118,30 @@ public class MainScript : MonoBehaviour
                     GameObject aux = population[j];
                     population[j] = population[j + 1];
                     population[j + 1] = aux;
+                }
+            }
+        }
+
+        GameObject[] selectionResult = { population[0], population[1] };
+        return selectionResult;
+    }
+
+    public void crossover()
+    {
+        GameObject[] selectionResult = selection();
+        for(int i = 0; i < population.Count; i++)
+        {
+            population.Add(Instantiate(playerGameObject, startPosition, Quaternion.identity));
+            for (int j = 0; j < 2; j++)
+            {
+                int r = Random.Range(0, 2);
+                if(j == 0)
+                {
+                    population[i].GetComponent<NavMeshAgent>().velocity = selectionResult[r].GetComponent<NavMeshAgent>().velocity;
+                    
+                } else if(j == 1)
+                {
+                    population[i].transform.localScale = selectionResult[r].transform.localScale;
 
                 }
             }
