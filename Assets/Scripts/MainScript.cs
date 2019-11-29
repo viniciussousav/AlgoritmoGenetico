@@ -104,7 +104,7 @@ public class MainScript : MonoBehaviour
         float score = element.GetComponent<MovimentPlayer>().getScore();
         float time = element.GetComponent<MovimentPlayer>().getLifeTime();
 
-        return score / time; //mudar essa função
+        return score  * 7 +  time * 3; //mudar essa função
     }
 
     public GameObject[] selection()
@@ -114,7 +114,7 @@ public class MainScript : MonoBehaviour
         {
             for(int j = 0; j < n - i - 1; j++)
             {
-                if(fitnessFunction(population[j+1]) > fitnessFunction(population[j + 1]))
+                if(fitnessFunction(population[j]) > fitnessFunction(population[j + 1]))
                 {
                     GameObject aux = population[j];
                     population[j] = population[j + 1];
@@ -123,22 +123,48 @@ public class MainScript : MonoBehaviour
             }
         }
 
-        GameObject[] selectionResult = { population[0], population[1] };
+        GameObject[] selectionResult = population.ToArray();
         return selectionResult;
     }
 
-    public void crossover(GameObject[] parents)
+    public int firstRandom(int i)
     {
+        if (i >= 1 && i <= 39)
+            return 4;
+        else if (i >= 40 && i <= 69)
+            return 3;
+        else if (i >= 70 && i <= 84)
+            return 2;        
+        else if (i >= 85 && i <= 94)
+            return 1;
+        else
+            return 0;   
+    }
+
+    public void crossover(GameObject[] orderPopulation)
+    {
+        
+        int first = firstRandom(Random.Range(1,101));
+        int second = firstRandom(Random.Range(1, 101));
+
+        while(second == first)
+        {
+            second = firstRandom(Random.Range(1, 101));
+        }
+
+        GameObject[] parents = { orderPopulation[first], orderPopulation[second] };
+      
         for (int i = 0; i < populationSize; i++)
         {
             population.Add(Instantiate(playerGameObject, startPosition, Quaternion.identity));
             for (int j = 0; j < 3; j++)
             {
-                int r = Random.Range(0, 2);
+                int r = Random.Range(0,2);
+
                 switch (j)
                 {
                     case 0:
-                        population[i].GetComponent<NavMeshAgent>().velocity = parents[r].GetComponent<NavMeshAgent>().velocity;
+                        population[i].GetComponent<NavMeshAgent>().speed = parents[r].GetComponent<NavMeshAgent>().speed;
                         break;
                     case 1:
                         population[i].transform.localScale = parents[r].transform.localScale;
@@ -160,10 +186,10 @@ public class MainScript : MonoBehaviour
     public void mutation()
     {
         int randomIndex = Random.Range(0, 5);
-        float randomScale = Random.Range(0.5f, 3f);
-        population[randomIndex].transform.localScale.Set(randomScale, randomScale, randomScale);
-        population[randomIndex].GetComponent<NavMeshAgent>().acceleration = Random.Range(2f, 12f);
-        population[randomIndex].GetComponent<NavMeshAgent>().speed = Random.Range(1f, 5f);
+        float randomScale = Random.Range(0.5f, 2.5f);
+        population[randomIndex].transform.localScale = new Vector3(randomScale, randomScale, randomScale);
+        population[randomIndex].GetComponent<NavMeshAgent>().acceleration = Random.Range(2f, 8f);
+        population[randomIndex].GetComponent<NavMeshAgent>().speed = Random.Range(1f, 8f);
     }
     
 
